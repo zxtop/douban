@@ -16,7 +16,7 @@ const app=express()
 var apiRoutes=express.Router()
 app.use('/api',apiRoutes)
 
-
+var homeData=require('../static/data/homeData.json');
 
 
 
@@ -33,8 +33,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   // these devServer options should be customized in /config/index.js
   devServer: {
     before(app){
-      app.get('/api', (req, res) => {
-        
+      app.get('/api/homeData', (req, res) => {
+          res.json({
+            errno:0,
+            data:homeData
+          })
       })
     },
     clientLogLevel: 'warning',

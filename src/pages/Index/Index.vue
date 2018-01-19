@@ -21,43 +21,45 @@
                 <div class="swiper-slide slide02" slot="swiper-con">Slide 2</div>
                 <div class="swiper-slide slide03" slot="swiper-con">Slide 3</div>
             </m-swipe> -->
+            <m-swipe swipeid="swipe01" :autoplay="1000" paginationDirection="right">
+              <div class="swiper-slide " slot="swiper-con"><img src="../../assets/images/banner/01.jpg" alt=""></div>
+              <div class="swiper-slide " slot="swiper-con"><img src="../../assets/images/banner/02.jpg" alt=""></div>
+              <div class="swiper-slide " slot="swiper-con"><img src="../../assets/images/banner/03.jpg" alt=""></div>
+            </m-swipe>
 
-      <m-swipe swipeid="swipe01" :autoplay="1000" paginationDirection="right">
-        <div class="swiper-slide " slot="swiper-con"><img src="../../assets/images/banner/01.jpg" alt=""></div>
-        <div class="swiper-slide " slot="swiper-con"><img src="../../assets/images/banner/02.jpg" alt=""></div>
-        <div class="swiper-slide " slot="swiper-con"><img src="../../assets/images/banner/03.jpg" alt=""></div>
-      </m-swipe>
 
+            <m-cell title="提醒" icon>
+                <img src="../../assets/images/ic_mine_notification.png" alt="" srcset="" slot="icon">
+                
+                <a href="javascript:;" slot="cell-right">
+                  <img src="../../assets/images/ic_arrow_gray_small.png" alt="" srcset="">
+                </a>
+            </m-cell>
+            <m-cell title="设置">
+                <a href="javascript:;" slot="cell-right">
+                  <img src="../../assets/images/ic_arrow_gray_small.png" alt="" srcset="">
+                </a>
+            </m-cell>
+            <m-cell title="热门" icon>
+                <span slot="icon" class="sp"></span>
+                <a href="javascript:;" slot="cell-right">
+                  <img src="../../assets/images/ic_arrow_gray_small.png" alt="" srcset="">
+                </a>
+            </m-cell>
 
-      <m-cell title="提醒" icon>
-          <img src="../../assets/images/ic_mine_notification.png" alt="" srcset="" slot="icon">
-          
-          <a href="javascript:;" slot="cell-right">
-            <img src="../../assets/images/ic_arrow_gray_small.png" alt="" srcset="">
-          </a>
-      </m-cell>
-      <m-cell title="设置">
-          <a href="javascript:;" slot="cell-right">
-            <img src="../../assets/images/ic_arrow_gray_small.png" alt="" srcset="">
-          </a>
-      </m-cell>
-      <m-cell title="热门" icon>
-          <span slot="icon" class="sp"></span>
-          <a href="javascript:;" slot="cell-right">
-            <img src="../../assets/images/ic_arrow_gray_small.png" alt="" srcset="">
-          </a>
-      </m-cell>
-
-      <m-cell-media author="作者：大象公会" column="来自栏目：广播精选" img="https://qnmob2.doubanio.com/img/files/file-1489047494.jpg">
-              <span slot="title">个人意见：为什么中国没有鲍勃·迪伦这样的民谣歌手</span>
-              <span slot="describe">我们这一代人的成长年代，真正的诗歌课从来都是缺席的。</span>
-      </m-cell-media>
+            <m-cell-media 
+            :author="item.target.author.name"  
+            :column="item.source_cn" 
+            :img="item.target.cover_url"  
+            v-for="(item) in hotData" :key="item.id">
+                    <span slot="title">{{item.title}}</span>
+                    <span slot="describe">{{item.target.desc}}</span>
+            </m-cell-media>
       
         </div>
       
   </div>
 </template>
-
 <script>
 import mHeader from "../../components/header";
 import mSwipe from '../../components/swipe'
@@ -71,26 +73,48 @@ export default {
      mCell,
     mCellMedia
   },
- 
-created:function (){
-    // var url='/api'
-    // this.$axios.get(url)
-    // .then(function (response) {
-    //   console.log(response);
-    // })
-    // .catch(function (error) {
-    //   console.log(error);
-    // });
-
-        var url='/api/movie/in_theaters';
-        this.$axios.get(url).then((response)=>{
-          console.log(response)
-          }).catch((e)=>{
-            console.log(e)
-          })
-}
+  data(){
+    return{
+      recommendData:[],
+      hotData:[]
+    }
+  },
+  created:function (){
 
 
+      // var url='/api/movie/in_theaters';
+      // this.$axios.get(url).then((response)=>{
+      //   console.log(response)
+      //   }).catch((e)=>{
+      //     console.log(e)
+      // })
+
+
+      this.fetchData();
+
+
+      this.$axios.get('/api/homeData').then((response)=>{
+        console.log(response.data)
+      })
+  },
+  methods:{
+      fetchData(){
+        this.$axios.get('/api/homeData').then((response)=>{
+          let data = response.data.data.recommend_feeds;
+          let recommend = [];
+          let hot = [];
+          for(var i in data){
+            if(data[i].card && data[i].card.name == '为你推荐'){
+              recommend.push(data[i]);
+            }else{
+              hot.push(data[i]);
+            }
+          }
+          this.recommendData=recommend;
+          this.hotData=hot;
+        })
+      }
+  }
 };
 </script>
 <style lang="less" scoped>
