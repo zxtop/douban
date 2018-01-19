@@ -54,8 +54,6 @@
       </m-cell-media>
       
         </div>
-
-
       
   </div>
 </template>
@@ -72,7 +70,27 @@ export default {
     mSwipe,
      mCell,
     mCellMedia
-  }
+  },
+ 
+created:function (){
+    // var url='/api'
+    // this.$axios.get(url)
+    // .then(function (response) {
+    //   console.log(response);
+    // })
+    // .catch(function (error) {
+    //   console.log(error);
+    // });
+
+        var url='/api/movie/in_theaters';
+        this.$axios.get(url).then((response)=>{
+          console.log(response)
+          }).catch((e)=>{
+            console.log(e)
+          })
+}
+
+
 };
 </script>
 <style lang="less" scoped>
